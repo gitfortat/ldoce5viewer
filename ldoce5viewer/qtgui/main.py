@@ -42,6 +42,7 @@ from .indexer import IndexerDialog
 from .ui.custom import ToolButton, LineEdit
 from .ui.main import Ui_MainWindow
 
+import subprocess
 
 # Config
 _INDEX_SUPPORTED = "2013.02.25"
@@ -540,7 +541,13 @@ class MainWindow(QMainWindow):
     #----------
 
     def _playbackAudio(self, path):
-        self._getAudioData(path, lambda data: self._soundplayer.play(data))
+        self._getAudioData(path, lambda data: self._saveAndPlay(data))
+
+    def _saveAndPlay(self, data):
+        file = open('/tmp/temp.mp3', 'wb')
+        file.write(data)
+        file.close()
+        subprocess.Popen(['mpg123', '-q', '/tmp/temp.mp3'])
 
     def _getAudioData(self,  path,  callback):
         (archive, name) = path.lstrip('/').split('/', 1)
